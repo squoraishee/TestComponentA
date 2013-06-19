@@ -19,6 +19,7 @@ public class ComponentA extends Activity {
 		view = (TextView)findViewById(R.id.component_version_text);
 		try {
 			view.setText(getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+			view.setText(getResources().getString(R.string.libA));
 		} catch (NameNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
