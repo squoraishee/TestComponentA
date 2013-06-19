@@ -36,7 +36,61 @@
 <build>
         <sourceDirectory>src</sourceDirectory>
         <finalName>${project.artifactId}-${artifact.version}</finalName>
+        <resources>
+            <!-- a pair definition for resource filtering of xml files only (not binary files since they get mangled -->
+            <resource>
+                <directory>${project.basedir}/res</directory>
+                <filtering>true</filtering>
+                <targetPath>${project.build.directory}/filtered-res</targetPath>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/res</directory>
+                <filtering>false</filtering>
+                <targetPath>${project.build.directory}/filtered-res</targetPath>
+                <excludes>
+                    <exclude>**/*.xml</exclude>
+                </excludes>
+            </resource>
+        </resources>
         <plugins>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>resources</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+           <groupId>com.google.code.maven-replacer-plugin</groupId>
+           <artifactId>replacer</artifactId>
+           <version>1.5.0</version>
+           <executions>
+               <execution>
+                   <phase>prepare-package</phase>
+                   <goals>
+                       <goal>replace</goal>
+                   </goals>                   
+               </execution>
+           </executions>
+           <configuration>
+               <includes>
+                   <include>target/filtered-res/values/strings.xml</include>
+               </includes>
+               <replacements>
+                   <replacement>
+                       <token>LIBASTRING!</token>
+                       <value>${artifact.version}</value>
+                   </replacement>         
+               </replacements>
+           </configuration>
+       </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
